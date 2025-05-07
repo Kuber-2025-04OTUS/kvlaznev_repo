@@ -41,7 +41,7 @@ spec:
           initialDelaySeconds: 10
           httpGet:
             path: "/index.html"
-            port: 8080
+            port: 8000
       initContainers:
       - name: wget
         image: busybox:1.28
