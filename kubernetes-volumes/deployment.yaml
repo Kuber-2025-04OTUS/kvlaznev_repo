@@ -33,6 +33,8 @@ spec:
         volumeMounts:
         - name: workdir
           mountPath: /homework
+        - name: workfile
+          mountPath: /homework/conf
         lifecycle:
           preStop:
             exec:
@@ -55,8 +57,14 @@ spec:
           mountPath: "/init"
       volumes:
       - name: workdir
-        emptyDir: {}
-
+        persistentVolumeClaim:
+          claimName: pvc-sc
+      - name: workfile
+        configMap:
+          name: conf-map
+          items:
+          - key: "file"
+            path: "file" 
   strategy:
     type: RollingUpdate
     rollingUpdate:
