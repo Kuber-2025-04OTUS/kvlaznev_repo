@@ -1,0 +1,8 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To access service please use:
+
+  $ curl -H "Head: {{.Values.ingress.host}}" http://you_cluster_ip_address/metrics.html
+  
