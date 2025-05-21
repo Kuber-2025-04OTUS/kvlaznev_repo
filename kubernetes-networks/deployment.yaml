@@ -15,7 +15,6 @@ spec:
       labels:
         app: nginx
     spec:
-      serviceAccountName: sa
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -34,8 +33,6 @@ spec:
         volumeMounts:
         - name: workdir
           mountPath: /homework
-        - name: workfile
-          mountPath: /homework/conf
         lifecycle:
           preStop:
             exec:
@@ -46,8 +43,8 @@ spec:
             path: "/index.html"
             port: 8000
       initContainers:
-      - name: wget-index
-        image: busybox:1.35
+      - name: wget
+        image: busybox:1.28
         command:
         - wget
         - "-O"
@@ -56,28 +53,10 @@ spec:
         volumeMounts:
         - name: workdir
           mountPath: "/init"
-      - name: wget-metrics
-        image: busybox:1.35
-        command:
-         - sh
-         - '-c'
-         - >
-           TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token);
-           wget --no-check-certificate --header="Authorization: Bearer ${TOKEN}" \
-             --output-document=/init/metrics.html https://kubernetes.default.svc/metrics
-        volumeMounts:
-        - name: workdir
-          mountPath: "/init"             
       volumes:
       - name: workdir
-        persistentVolumeClaim:
-          claimName: pvc-sc
-      - name: workfile
-        configMap:
-          name: conf-map
-          items:
-          - key: "file"
-            path: "file" 
+        emptyDir: {}
+
   strategy:
     type: RollingUpdate
     rollingUpdate:
