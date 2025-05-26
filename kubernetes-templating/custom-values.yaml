@@ -1,8 +1,0 @@
-probe:
-  enabled: false
-image:
-  container:
-    repository: nginx
-    tag: "1.27.5"
-service:
-  targetPort: 80
