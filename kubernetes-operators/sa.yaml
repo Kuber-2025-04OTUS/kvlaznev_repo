@@ -2,4 +2,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: mysql-operator
-  namespace: homework
+  namespace: default
