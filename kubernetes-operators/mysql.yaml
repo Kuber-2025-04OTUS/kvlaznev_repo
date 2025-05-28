@@ -7,4 +7,4 @@ spec:
   image: mysql:8.0
   database: database
   password: SuperPass
-  storage_size: 1G
+  storage_size: 1Gi
