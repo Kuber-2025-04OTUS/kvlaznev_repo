@@ -1,9 +1,0 @@
-config:
-# publish data to loki
-  clients:
-    - url: http://loki-gateway.logs.svc.cluster.local/loki/api/v1/push
-tolerations:
-  - key: "node-role"
-    operator: "Equal"
-    value: "infra"
-    effect: "NoSchedule"
