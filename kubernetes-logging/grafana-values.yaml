@@ -1,0 +1,11 @@
+nodeSelector:
+  node-role: infra
+tolerations:
+  - key: "node-role"
+    operator: "Equal"
+    value: "infra"
+    effect: "NoSchedule"
+
+persistence:
+  enabled: true
+  size: 1Gi

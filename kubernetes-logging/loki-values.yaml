@@ -1,6 +1,19 @@
+
 loki:
+  auth_enabled: false
   commonConfig:
     replication_factor: 1
+  storage:
+    bucketNames:
+      chunks: "otus-loki-logs"
+      ruler: "otus-loki-logs"
+      admin: "otus-loki-logs"
+    type: s3
+    s3:
+      endpoint: "https://storage.yandexcloud.net"
+      region: "ru-central1"
+      secretAccessKey: ""
+      accessKeyId: ""
   schemaConfig:
     configs:
       - from: "2024-04-01"
@@ -18,13 +31,38 @@ loki:
   ruler:
     enable_api: true
 
-minio:
-  enabled: true
-      
+     
 deploymentMode: SingleBinary
+
+
+node: &node
+  nodeSelector:
+    node-role: infra
+  tolerations:
+    - key: "node-role"
+      operator: "Equal"
+      value: "infra"
+      effect: "NoSchedule"
 
 singleBinary:
   replicas: 1
+  <<: *node
+
+lokiCanary:
+  <<: *node
+
+gateway:
+  <<: *node
+
+resultsCache:
+  <<: *node
+
+chunksCache:
+  enabled: true
+  allocatedMemory: 512
+  <<: *node
+
+
 
 # Zero out replica counts of other deployment modes
 backend:
@@ -52,3 +90,5 @@ bloomCompactor:
   replicas: 0
 bloomGateway:
   replicas: 0
+
+
