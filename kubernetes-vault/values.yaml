@@ -1,0 +1,17 @@
+server:
+  ha:
+    enabled: true
+    config: |
+      ui = true
+
+      listener "tcp" {
+        tls_disable = 1
+        address = "0.0.0.0:8200"
+        cluster_address = "0.0.0.0:8201"
+      }    
+      storage "consul" {
+              path = "vault/"
+              address = "consul-consul-server.consul.svc:8500"
+            }
+      service_registration "kubernetes" {}            
+    
