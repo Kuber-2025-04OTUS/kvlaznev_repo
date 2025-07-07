@@ -1,0 +1,54 @@
+
+wget https://github.com/hashicorp/consul-k8s/archive/refs/tags/v1.7.1.zip
+unzip v1.7.1.zip
+helm install \
+  --namespace consul \
+  --create-namespace \
+  --set-file yandexKmsAuthJson=authorized-key.json \
+  --set yandexKmsKeyId=aaaaaa \
+  consul ./consul-k8s-1.7.1/charts/consul --set server.replicas=3
+
+#vault
+helm pull oci://cr.yandex/yc-marketplace/yandex-cloud/vault/chart/vault \
+  --version 0.28.1+yckms \
+  --untar
+helm install \
+  --namespace vault \
+  --create-namespace \
+  --set-file yandexKmsAuthJson=authorized-key.json \
+  --set yandexKmsKeyId=aaaaaa \
+  --set "injector.enabled=false" \
+  --set "csi.enabled=true"
+  vault ./vault/ -f ./kvlaznev_repo/kubernetes-vault/values.yaml
+
+#eso
+helm repo add external-secrets https://charts.external-secrets.io
+helm repo update
+helm upgrade --install external-secrets external-secrets/external-secrets \
+    --namespace vault
+
+#настройка kubernetes authentication
+kubectl create token vault-auth -n vault --duration=8760h 
+#в поде vault-0
+export VAULT_TOKEN=""
+#настройки аутентификации
+vault auth enable kubernetes
+vault write auth/kubernetes/config \
+  kubernetes_host=https://$KUBERNETES_PORT_443_TCP_ADDR \
+  kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+  token_reviewer_jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
+#настройки политики
+vault policy write otus-policy /tmp/otus-policy.hcl
+#настройки роли
+vault write auth/kubernetes/role/otus \
+  bound_service_account_names=vault-auth \
+  bound_service_account_namespaces=vault \
+  policies=otus-policy
+
+#применение манифестов для eso и проверка создания секрета
+kubectl apply -f eso-ss.yaml
+kubectl apply -f eso.yaml 
+kubectl describe ss otus-secretstore -n vault
+kubectl describe externalsecret otus-cred -n vault
+kubectl describe  secret otus-cred -n vault
+
