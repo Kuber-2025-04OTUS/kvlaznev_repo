@@ -8,7 +8,13 @@ Targeting container "nginx". If you don't see processes from this container it m
 --profile=legacy is deprecated and will be removed in the future. It is recommended to explicitly specify a profile, for example "--profile=general".
 Defaulting debug container name to debugger-bjmjc.
 If you don't see a command prompt, try pressing enter.
-/ # ls -la /proc/1/root/etc/nginx/
+```
+command:
+```shell
+ls -la /proc/1/root/etc/nginx/
+```
+output:
+```
 total 48
 drwxr-xr-x    3 root     root          4096 Oct  5  2020 .
 drwxr-xr-x    1 root     root          4096 Jul 11 15:33 ..
