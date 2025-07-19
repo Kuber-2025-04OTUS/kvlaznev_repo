@@ -4,7 +4,9 @@
 158.160.176.82  otus-wn-03
 
 На мастер ноде:
+```shell
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+```
 
 Вывод:
 ```shell
@@ -31,7 +33,9 @@ kubeadm join 10.130.0.19:6443 --token ktjzbv.42wnr334ts7zjr9x \
 ```
 
 Устанавливаем Flannel
+```shell
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
 Вывод:
 ```shell
 namespace/kube-flannel created
@@ -42,7 +46,9 @@ configmap/kube-flannel-cfg created
 daemonset.apps/kube-flannel-ds created
 ```
 Проверка:
+```shell
 kubectl get no -o wide
+```
 Вывод:
 ```shell
 NAME         STATUS   ROLES           AGE   VERSION    INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
@@ -50,8 +56,10 @@ otus-mn-01   Ready    control-plane   16m   v1.31.11   10.130.0.19   <none>     
 ```
 
 На воркерах:
+```shell
 sudo kubeadm join otus-mn-01:6443 --token ktjzbv.42wnr334ts7zjr9x \
         --discovery-token-ca-cert-hash sha256:0e7656c15a50dd23d1b28670df300f6d31f65f093f1ccafbf2e33fc80a356406 
+```        
 Вывод:
 ```shell
 NAME         STATUS   ROLES           AGE     VERSION    INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
