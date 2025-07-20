@@ -69,3 +69,47 @@ otus-wn-02   Ready    <none>          3m57s   v1.31.11   10.130.0.4    <none>   
 otus-wn-03   Ready    <none>          64s     v1.31.11   10.130.0.15   <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://1.7.27
 ```
 
+Обновление до версии 1.32  
+На мастер ноде:
+```shell
+sudo sed -i 's/1.31/1.32/g' /etc/apt/sources.list.d/kubernetes.list
+sudo apt update
+sudo apt-cache madison kubeadm
+sudo apt-mark unhold kubeadm kubelet kubectl&& \
+sudo apt-get update && sudo apt-get install -y kubeadm='1.32.7-1.1' kubelet='1.32.7-1.1' kubectl='1.32.7-1.1' && \
+sudo apt-mark hold kubeadm kubelet kubectl
+sudo kubeadm upgrade plan
+```
+Вывод:
+```shell
+[upgrade] SUCCESS! A control plane node of your cluster was upgraded to "v1.32.7".
+```
+Последовательно освобождаем каждую воркер ноду и обновляем:
+```shell
+mn: kubectl drain otus-wn-01 --ignore-daemonsets
+wn: 
+sudo sed -i 's/1.31/1.32/g' /etc/apt/sources.list.d/kubernetes.list 
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.32.7-1.1' kubectl='1.32.7-1.1' && \
+sudo apt-mark hold kubelet kubectl
+mn: kubectl uncordon otus-wn-01
+```
+Проверка:
+```shell
+kubectl get no -o wide
+```
+Вывод:
+```shell
+NAME         STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+otus-mn-01   Ready    control-plane   9h    v1.32.7   10.130.0.19   <none>        Ubuntu 24.04.2 LTS   6.8.0-63-generic   containerd://1.7.27
+otus-wn-01   Ready    <none>          9h    v1.32.7   10.130.0.23   <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://1.7.27
+otus-wn-02   Ready    <none>          9h    v1.32.7   10.130.0.4    <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://1.7.27
+otus-wn-03   Ready    <none>          9h    v1.32.7   10.130.0.15   <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://1.7.27
+```
+
+
+84.201.150.210  otus-mn-01
+158.160.176.82  otus-mn-02
+158.160.175.69  otus-mn-03
+158.160.158.38  otus-wn-01
+158.160.193.164 otus-wn-02
