@@ -1,3 +1,4 @@
+## Основное задание
 Узлы:
 ```shell
 84.201.150.210  otus-mn-01
@@ -110,7 +111,7 @@ otus-wn-02   Ready    <none>          9h    v1.32.7   10.130.0.4    <none>      
 otus-wn-03   Ready    <none>          9h    v1.32.7   10.130.0.15   <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://1.7.27
 ```
 
-#Задание со *
+## Задание со *
 Узлы:
 ```shell
 84.201.150.210  otus-mn-01
