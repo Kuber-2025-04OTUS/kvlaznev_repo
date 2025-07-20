@@ -1,7 +1,10 @@
+Узлы:
+```shell
 84.201.150.210  otus-mn-01
 158.160.158.38  otus-wn-01
 158.160.193.164 otus-wn-02
 158.160.176.82  otus-wn-03
+```
 
 На мастер ноде:
 ```shell
@@ -107,9 +110,29 @@ otus-wn-02   Ready    <none>          9h    v1.32.7   10.130.0.4    <none>      
 otus-wn-03   Ready    <none>          9h    v1.32.7   10.130.0.15   <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://1.7.27
 ```
 
-
+#Задание со *
+Узлы:
+```shell
 84.201.150.210  otus-mn-01
 158.160.176.82  otus-mn-02
 158.160.175.69  otus-mn-03
 158.160.158.38  otus-wn-01
 158.160.193.164 otus-wn-02
+```
+Запуск плейбука
+```shell
+ansible-playbook -i /inventory/inventory.ini --private-key /root/.ssh/id_rsa -u kst --become  cluster.yml
+```
+Проверка:
+```shell
+sudo kubectl get no -o wide
+```
+Вывод:
+```shell
+NAME         STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+otus-mn-01   Ready    control-plane   11m   v1.32.5   10.130.0.19   <none>        Ubuntu 24.04.2 LTS   6.8.0-63-generic   containerd://2.0.5
+otus-mn-02   Ready    control-plane   11m   v1.32.5   10.130.0.35   <none>        Ubuntu 24.04.2 LTS   6.8.0-63-generic   containerd://2.0.5
+otus-mn-03   Ready    control-plane   11m   v1.32.5   10.130.0.10   <none>        Ubuntu 24.04.2 LTS   6.8.0-63-generic   containerd://2.0.5
+otus-wn-01   Ready    <none>          10m   v1.32.5   10.130.0.23   <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://2.0.5
+otus-wn-02   Ready    <none>          10m   v1.32.5   10.130.0.4    <none>        Ubuntu 24.04.2 LTS   6.8.0-64-generic   containerd://2.0.5
+```
